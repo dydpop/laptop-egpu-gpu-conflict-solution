@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "profileName": "Hybrid iGPU + NVIDIA eGPU profile (example)",
+  "paths": {
+    "backupDirectory": "state/backups",
+    "logDirectory": "state/logs",
+    "reportDirectory": "state/reports",
+    "supportBundleDirectory": "support-bundles"
+  },
+  "health": {
+    "lookbackMinutes": 30,
+    "whea17DegradedThreshold": 3,
+    "tdrDegradedThreshold": 1,
+    "nvidiaNamePattern": "NVIDIA",
+    "intelNamePattern": "Intel"
+  },
+  "display": {
+    "internalDisplayPattern": "DISPLAY\\\\INTERNAL_VENDOR_ID",
+    "externalDisplayPatterns": [
+      "DISPLAY\\\\EXTERNAL_VENDOR_ID"
+    ]
+  },
+  "policy": {
+    "detachedRemovesPreferNvidiaEntries": true,
+    "degradedRemovesPreferNvidiaEntries": true,
+    "setAutoEntries": false
+  },
+  "applications": [
+    {
+      "name": "Microsoft Edge",
+      "path": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "category": "AlwaysIntel",
+      "gpuPreference": "PowerSaving",
+      "protectedOnEject": true
+    },
+    {
+      "name": "Example game executable",
+      "path": "C:\\Path\\To\\ExampleGame\\Game.exe",
+      "category": "PreferNvidiaWhenHealthy",
+      "gpuPreference": "HighPerformance",
+      "protectedOnEject": false
+    },
+    {
+      "name": "Example content creation app",
+      "path": "C:\\Path\\To\\ExampleCreator\\ExampleCreator.exe",
+      "category": "PreferNvidiaWhenHealthy",
+      "gpuPreference": "HighPerformance",
+      "protectedOnEject": false
+    },
+    {
+      "name": "Example AI worker",
+      "path": "C:\\Path\\To\\ExampleAiEnv\\python.exe",
+      "category": "PreferNvidiaWhenHealthy",
+      "gpuPreference": "HighPerformance",
+      "protectedOnEject": true
+    },
+    {
+      "name": "Example launcher",
+      "path": "C:\\Path\\To\\ExampleGame\\Launcher.exe",
+      "category": "Auto",
+      "gpuPreference": "Auto",
+      "protectedOnEject": true
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+# Local agent/workspace memory
+.codex-memory/
+.claudemem/
+
+# Generated diagnostics and local machine state
+gpu-control/state/
+gpu-control/support-bundles/
+gpu-control/config/gpu-policy.json
+
+# Exported diagnostics and logs can contain machine-specific details
+*.zip
+*.log
+*.etl
+*.evtx
+*.dmp
+*.reg
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+desktop.ini

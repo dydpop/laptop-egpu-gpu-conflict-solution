@@ -1,0 +1,61 @@
+Source-Available Non-Commercial Attribution License
+Version 1.0
+
+Copyright (c) 2026 DYD (GitHub: dydpop)
+
+This is a custom source-available license. It is not an Open Source Initiative
+approved open-source license.
+
+1. Grant of Rights
+
+You may read, search, inspect, and audit this repository. You may also use,
+copy, and modify the materials for personal, educational, research, and
+non-commercial diagnostic purposes, provided that you keep the copyright notice,
+license notice, and attribution to DYD (GitHub: dydpop).
+
+2. Non-Commercial Restriction
+
+You may not use the materials, in whole or in part, for commercial purposes
+without prior written permission from the copyright holder.
+
+Commercial purposes include, but are not limited to:
+
+- selling or sublicensing the materials;
+- packaging the materials into paid software, services, support offerings, or
+  consulting deliverables;
+- using the materials in a proprietary product or internal commercial tool;
+- offering hosted, managed, or SaaS access based on the materials;
+- using the materials for paid training, paid troubleshooting, or paid repair
+  services.
+
+3. Attribution
+
+Any permitted copy, modification, or non-commercial distribution must clearly
+state that the original project was created by DYD (GitHub: dydpop) and must
+link back to the original public repository when practical.
+
+4. No Trademark Rights
+
+This license does not grant rights to use the names, logos, or trademarks of
+DYD, GitHub, Microsoft, Intel, NVIDIA, or any other third party.
+
+5. No Warranty
+
+The materials are provided "as is", without warranty of any kind. GPU routing,
+driver behavior, eGPU hot-plugging, registry changes, and diagnostic scripts can
+affect system behavior. You are responsible for reviewing the scripts and
+backing up your system before use.
+
+6. Limitation of Liability
+
+To the maximum extent permitted by applicable law, the copyright holder is not
+liable for any claim, damage, data loss, downtime, hardware issue, software
+failure, or other liability arising from use of the materials.
+
+7. Permission for Commercial Use
+
+Commercial use requires explicit written permission from DYD (GitHub: dydpop).
+
+中文摘要（非正式翻译）：
+
+本仓库公开可读、可搜索、可审计，并允许个人、教育、研究和非商业诊断用途。禁止未经授权的商业使用，包括出售、再授权、打包进付费软件或服务、用于商业内部工具、SaaS、付费培训、付费排障或付费维修服务。使用时必须保留版权、许可证和 DYD（GitHub: dydpop）署名。本中文摘要仅为方便理解；如与英文条款冲突，以英文条款为准。
