@@ -41,6 +41,8 @@ The toolkit runs only on manual invocation, logon, device-change events, or supp
 | `Attached-ExternalOnly` | Lid closed or external-only display | Prefer NVIDIA for graphics and compute; keep Intel as fallback |
 | `Attached-Degraded` | WHEA 17, TDR, or reset evidence is increasing | Stop assigning new heavy workloads to NVIDIA |
 
+Monitor detection separates connected devices from desktop-active displays. EDID visibility only means Windows can still see the monitor device; it does not prove the monitor is part of the current desktop. A black, powered-off, or desktop-disabled external display should be treated as internal-only use.
+
 ## Why Current-User Graphics Preferences
 
 On modern Windows versions, per-app GPU choice is primarily controlled by Windows graphics preferences. The toolkit therefore changes only:

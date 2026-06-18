@@ -2,11 +2,19 @@
 
 ## A Hybrid GPU Conflict Mitigation Strategy for Laptops with External Desktop GPU Enclosures
 
+![Laptop eGPU hybrid GPU conflict toolkit preview](docs/assets/repository-preview.svg)
+
 这是一个公开可读的 Windows 混合 GPU 控制与诊断脚本包，面向“笔记本核显 + 外接桌面级 NVIDIA 显卡坞”这类容易出现 GPU 选择混乱、DXGI device removed、TDR、WHEA 17 和热插拔崩溃的环境。
 
 This is a public, source-available Windows hybrid GPU control and diagnostics toolkit for laptops that use an integrated GPU together with an external desktop-class NVIDIA GPU enclosure.
 
 > License note: this repository is public for reading, searching, auditing, and non-commercial diagnostic use only. Commercial use, resale, SaaS integration, paid support repackaging, or proprietary product integration is not allowed. See [LICENSE](LICENSE).
+
+## Search Keywords / 检索关键词
+
+Windows 11 eGPU, hybrid GPU, Intel NVIDIA conflict, external GPU enclosure, laptop external desktop GPU, USB4 eGPU, Thunderbolt eGPU, GPU hot-plug, WHEA 17, TDR, DXGI device removed, device lost, NVIDIA eGPU crash, PowerShell GPU diagnostics, Razer Core-class enclosure.
+
+Windows 11 外接显卡坞、笔记本外接桌面级显卡、核显独显冲突、Intel NVIDIA 混合 GPU、USB4 显卡坞、Thunderbolt 显卡坞、热插拔崩溃、WHEA 17、TDR、DXGI device removed、显卡设备丢失、PowerShell 显卡诊断。
 
 ## 中文说明
 
@@ -42,6 +50,8 @@ This is a public, source-available Windows hybrid GPU control and diagnostics to
 - `Attached-Extended`：内屏 + NVIDIA 上的副屏同时使用；副屏输出和重负载优先 NVIDIA，内屏轻负载保留 Intel。
 - `Attached-ExternalOnly`：合盖或只用副屏；图形和计算优先 NVIDIA，但不禁用 Intel。
 - `Attached-Degraded`：NVIDIA 在线但 WHEA 17、TDR 或设备重置异常增长；暂停把新重负载推到 NVIDIA，优先排查链路/驱动/线材/固件。
+
+显示器判断分成两层：`Connected monitors` 表示 Windows 能读到显示器设备/EDID；`Desktop-active monitors` 表示这个屏幕当前有桌面区域和分辨率。外屏插在 eGPU 上但处于黑屏、关闭或未被 Windows 用作桌面时，只算 connected，不算 `Attached-Extended`。当健康状态覆盖为 `Attached-Degraded` 时，报告里的 `Display mode` 仍会单独显示 `InternalOnly`、`Extended` 或 `ExternalOnly`。
 
 ### 仓库内容
 
@@ -136,6 +146,8 @@ The toolkit keeps both GPUs available and applies only current-user Windows grap
 - `Attached-Extended`: internal panel plus an external display on NVIDIA; keep light internal-panel work on Intel and heavy/external-display work on NVIDIA.
 - `Attached-ExternalOnly`: lid closed or external-only mode; prefer NVIDIA for graphics and compute while keeping Intel as fallback.
 - `Attached-Degraded`: NVIDIA is online but WHEA/TDR/device-reset evidence is increasing; stop assigning new heavy workloads to NVIDIA until the link/driver/cable/firmware problem is handled.
+
+Monitor detection has two layers: `Connected monitors` means Windows can see the monitor device/EDID, while `Desktop-active monitors` means the display currently has a desktop area and resolution. An external monitor connected to the eGPU but black, powered off, or not used by the Windows desktop is connected only and does not count as `Attached-Extended`. When health is overridden to `Attached-Degraded`, the report still exposes `Display mode` separately as `InternalOnly`, `Extended`, or `ExternalOnly`.
 
 ### What This Repository Provides
 

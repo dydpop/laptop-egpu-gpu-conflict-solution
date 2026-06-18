@@ -29,6 +29,7 @@ foreach ($app in $policy.applications) {
 $result = [pscustomobject]@{
     Timestamp = (Get-Date).ToString('o')
     State = $state.State
+    DisplayMode = $state.DisplayMode
     IsDegraded = $state.IsDegraded
     DegradedReasons = $state.DegradedReasons
     Preview = [bool] $WhatIf
@@ -38,7 +39,7 @@ $result = [pscustomobject]@{
 }
 
 if (-not $WhatIf) {
-    Write-GpuControlLog "Applied GPU policy for state $($state.State); changes=$(@($changes).Count)"
+    Write-GpuControlLog "Applied GPU policy for state $($state.State), display mode $($state.DisplayMode); changes=$(@($changes).Count)"
 }
 
 if ($Json) {
@@ -47,6 +48,7 @@ if ($Json) {
 }
 
 Write-Host "Detected state: $($state.State)"
+Write-Host "Display mode: $($state.DisplayMode)"
 if ($state.IsDegraded) {
     Write-Host "State is degraded; high-performance entries are removed or left Auto by policy." -ForegroundColor Yellow
     foreach ($reason in $state.DegradedReasons) {

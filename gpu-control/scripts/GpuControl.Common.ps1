@@ -137,6 +137,19 @@ function Get-MonitorRoleLabel {
     return 'Unknown'
 }
 
+function ConvertTo-NormalizedMonitorInstanceId {
+    param(
+        [AllowNull()]
+        [string] $InstanceId
+    )
+
+    if ([string]::IsNullOrWhiteSpace($InstanceId)) {
+        return $null
+    }
+
+    return ($InstanceId -replace '_\d+$', '').ToUpperInvariant()
+}
+
 function ConvertTo-SanitizedUserGpuPreferenceSummary {
     $prefs = Get-UserGpuPreferences
     $rows = @()
@@ -249,6 +262,7 @@ function ConvertTo-SanitizedGpuControlState {
         Timestamp = $null
         TimestampRedacted = $true
         State = $State.State
+        DisplayMode = $State.DisplayMode
         IsDegraded = $State.IsDegraded
         DegradedReasons = $State.DegradedReasons
         NvidiaOnline = $State.NvidiaOnline
@@ -263,9 +277,13 @@ function ConvertTo-SanitizedGpuControlState {
         Monitors = @($State.Monitors | ForEach-Object {
             [pscustomobject]@{
                 Role = Get-MonitorRoleLabel -Monitor $_ -Policy $policy
+                Connected = $_.Connected
+                HasDesktopArea = $_.HasDesktopArea
                 Active = $_.Active
             }
         })
+        ConnectedMonitorCount = $State.ConnectedMonitorCount
+        DesktopActiveMonitorCount = $State.DesktopActiveMonitorCount
         ActiveMonitorCount = $State.ActiveMonitorCount
         InternalMonitorCount = $State.InternalMonitorCount
         ExternalMonitorCount = $State.ExternalMonitorCount
@@ -294,14 +312,41 @@ function Get-VideoControllers {
 
 function Get-DisplayMonitors {
     $monitors = Get-CimInstance -Namespace root\wmi -ClassName WmiMonitorID -ErrorAction SilentlyContinue
+    $desktopMonitors = @{}
+    foreach ($desktopMonitor in @(Get-CimInstance Win32_DesktopMonitor -ErrorAction SilentlyContinue)) {
+        $key = ConvertTo-NormalizedMonitorInstanceId $desktopMonitor.PNPDeviceID
+        if (-not [string]::IsNullOrWhiteSpace($key)) {
+            $desktopMonitors[$key] = $desktopMonitor
+        }
+    }
+
     foreach ($monitor in $monitors) {
         $name = ($monitor.UserFriendlyName | Where-Object { $_ -ne 0 } | ForEach-Object { [char] $_ }) -join ''
         $serial = ($monitor.SerialNumberID | Where-Object { $_ -ne 0 } | ForEach-Object { [char] $_ }) -join ''
+        $key = ConvertTo-NormalizedMonitorInstanceId $monitor.InstanceName
+        $desktopMonitor = $null
+        if (-not [string]::IsNullOrWhiteSpace($key) -and $desktopMonitors.ContainsKey($key)) {
+            $desktopMonitor = $desktopMonitors[$key]
+        }
+
+        $hasDesktopArea = $false
+        $screenWidth = $null
+        $screenHeight = $null
+        if ($desktopMonitor) {
+            $screenWidth = $desktopMonitor.ScreenWidth
+            $screenHeight = $desktopMonitor.ScreenHeight
+            $hasDesktopArea = $null -ne $screenWidth -and $null -ne $screenHeight -and [int] $screenWidth -gt 0 -and [int] $screenHeight -gt 0
+        }
+
         [pscustomobject]@{
             InstanceName = $monitor.InstanceName
             Name = $name
             Serial = $serial
-            Active = [bool] $monitor.Active
+            Connected = [bool] $monitor.Active
+            HasDesktopArea = $hasDesktopArea
+            ScreenWidth = $screenWidth
+            ScreenHeight = $screenHeight
+            Active = $hasDesktopArea
         }
     }
 }
@@ -523,6 +568,7 @@ function Get-GpuControlState {
     $nvidiaControllers = @($controllers | Where-Object { $_.Name -match $policy.health.nvidiaNamePattern -and $_.Status -eq 'OK' })
     $intelControllers = @($controllers | Where-Object { $_.Name -match $policy.health.intelNamePattern -and $_.Status -eq 'OK' })
     $activeMonitors = @($monitors | Where-Object { $_.Active })
+    $connectedMonitors = @($monitors | Where-Object { $_.Connected })
     $internalMonitors = @($activeMonitors | Where-Object { $_.InstanceName -match $policy.display.internalDisplayPattern })
     $externalMonitors = @()
     foreach ($monitor in $activeMonitors) {
@@ -532,6 +578,23 @@ function Get-GpuControlState {
                 break
             }
         }
+    }
+
+    $displayModeName = 'InternalOnly'
+    if (@($externalMonitors).Count -gt 0 -and @($internalMonitors).Count -gt 0) {
+        $displayModeName = 'Extended'
+    }
+    elseif (@($externalMonitors).Count -gt 0 -and @($internalMonitors).Count -eq 0) {
+        $displayModeName = 'ExternalOnly'
+    }
+    elseif (@($internalMonitors).Count -gt 0) {
+        $displayModeName = 'InternalOnly'
+    }
+    elseif (@($activeMonitors).Count -gt 0) {
+        $displayModeName = 'UnknownActiveDisplay'
+    }
+    else {
+        $displayModeName = 'NoDesktopDisplay'
     }
 
     $nvidiaOnline = @($nvidiaControllers).Count -gt 0
@@ -553,10 +616,10 @@ function Get-GpuControlState {
         if ($isDegraded) {
             $stateName = 'Attached-Degraded'
         }
-        elseif (@($externalMonitors).Count -gt 0 -and @($internalMonitors).Count -gt 0) {
+        elseif ($displayModeName -eq 'Extended') {
             $stateName = 'Attached-Extended'
         }
-        elseif (@($externalMonitors).Count -gt 0 -and @($internalMonitors).Count -eq 0) {
+        elseif ($displayModeName -eq 'ExternalOnly') {
             $stateName = 'Attached-ExternalOnly'
         }
         else {
@@ -567,12 +630,15 @@ function Get-GpuControlState {
     [pscustomobject]@{
         Timestamp = (Get-Date).ToString('o')
         State = $stateName
+        DisplayMode = $displayModeName
         IsDegraded = $isDegraded
         DegradedReasons = $degradedReasons
         NvidiaOnline = $nvidiaOnline
         IntelOnline = @($intelControllers).Count -gt 0
         Controllers = $controllers
         Monitors = $monitors
+        ConnectedMonitorCount = @($connectedMonitors).Count
+        DesktopActiveMonitorCount = @($activeMonitors).Count
         ActiveMonitorCount = @($activeMonitors).Count
         InternalMonitorCount = @($internalMonitors).Count
         ExternalMonitorCount = @($externalMonitors).Count

@@ -50,6 +50,8 @@ gpu-control/
 | `Attached-ExternalOnly` | 合盖或只用副屏 | 图形和计算优先 NVIDIA，Intel 保留为 fallback |
 | `Attached-Degraded` | NVIDIA 在线但近期 WHEA 17、TDR 或重置异常增长 | 暂停把新重负载推到 NVIDIA，先排查链路、驱动、线材或固件 |
 
+这里有一个容易误导的点：脚本会同时显示 `Connected monitors` 和 `Desktop-active monitors`。前者只代表 Windows 还能读到显示器设备/EDID；后者才代表这个屏幕当前真的有桌面区域和分辨率。外屏插在 eGPU 上但黑屏、关闭、或在 Windows 显示设置里没有被用于桌面时，应按单屏处理，不应算作扩展双屏。如果 `State` 因 WHEA/TDR 被覆盖为 `Attached-Degraded`，请同时看 `Display mode`，它会单独显示 `InternalOnly`、`Extended` 或 `ExternalOnly`。
+
 ### 3. 加了可回滚机制
 
 第一次真正运行：
@@ -330,6 +332,8 @@ Attached-InternalOnly
 ```
 
 这种情况下，桌面和轻应用保留 Intel，重图形、游戏、AI 程序可以优先 NVIDIA。因为画面可能需要回传到内屏，这种模式更要留意 WHEA/TDR 是否增长。
+
+如果外屏只是连接着、Windows 能读到设备信息，但外屏黑屏/关闭/未参与桌面，状态也应归到这里，而不是 `Attached-Extended`。
 
 ### 笔记本内屏 + 插在 eGPU 上的副屏
 

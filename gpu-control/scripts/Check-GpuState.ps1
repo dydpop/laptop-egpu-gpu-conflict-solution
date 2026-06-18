@@ -24,9 +24,11 @@ if ($Json) {
 }
 
 Write-Host "GPU state: $($state.State)"
+Write-Host "Display mode: $($state.DisplayMode)"
 Write-Host "NVIDIA online: $($state.NvidiaOnline)"
 Write-Host "Intel online: $($state.IntelOnline)"
-Write-Host "Active monitors: $($state.ActiveMonitorCount) (internal: $($state.InternalMonitorCount), external: $($state.ExternalMonitorCount))"
+Write-Host "Connected monitors: $($state.ConnectedMonitorCount)"
+Write-Host "Desktop-active monitors: $($state.DesktopActiveMonitorCount) (internal: $($state.InternalMonitorCount), external: $($state.ExternalMonitorCount))"
 if ($state.IsDegraded) {
     Write-Host "Health: DEGRADED" -ForegroundColor Yellow
     foreach ($reason in $state.DegradedReasons) {
@@ -47,12 +49,12 @@ else {
 }
 
 Write-Host ""
-Write-Host "Active monitors:"
+Write-Host "Monitors:"
 if ($IncludePrivateDetails) {
-    $state.Monitors | Where-Object { $_.Active } | Format-Table InstanceName, Name, Serial -AutoSize
+    $state.Monitors | Format-Table InstanceName, Name, Connected, HasDesktopArea, ScreenWidth, ScreenHeight -AutoSize
 }
 else {
-    $outputState.Monitors | Where-Object { $_.Active } | Format-Table Role, Active -AutoSize
+    $outputState.Monitors | Format-Table Role, Connected, HasDesktopArea -AutoSize
 }
 
 Write-Host ""

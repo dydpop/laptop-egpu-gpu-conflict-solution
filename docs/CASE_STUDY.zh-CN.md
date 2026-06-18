@@ -41,6 +41,8 @@
 | `Attached-ExternalOnly` | 合盖或只用副屏 | 图形/计算优先 NVIDIA，Intel 保留 fallback |
 | `Attached-Degraded` | WHEA 17、TDR、设备重置异常增长 | 暂停把新重负载推到 NVIDIA |
 
+显示器识别要区分“已连接”和“桌面活动”。Windows 能读到外屏 EDID 只能说明显示器设备还在，不能说明它正在参与桌面。外屏黑屏、关闭或未被 Windows 分配桌面区域时，应按只用内屏处理。
+
 ## 为什么只改当前用户图形偏好
 
 Windows 10 20H1 之后，很多应用的 GPU 选择由 Windows 图形设置优先决定。这个工具因此只修改：

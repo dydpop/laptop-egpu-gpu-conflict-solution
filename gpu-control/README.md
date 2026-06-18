@@ -18,6 +18,8 @@ HKCU\Software\Microsoft\DirectX\UserGpuPreferences
 - `Attached-ExternalOnly`：合盖或只用副屏；NVIDIA 作为主要图形设备，Intel 保留为 fallback。 / Lid-closed or external-only mode; NVIDIA is primary while Intel remains a fallback.
 - `Attached-Degraded`：NVIDIA 在线但 WHEA 17、TDR 或设备重置异常增长；暂停把新重负载推到 NVIDIA。 / NVIDIA is online but WHEA 17, TDR, or reset evidence is increasing; stop assigning new heavy workloads to NVIDIA.
 
+`Connected monitors` 只表示 Windows 能看到显示器设备/EDID；`Desktop-active monitors` 才表示屏幕当前有桌面区域和分辨率。外屏黑屏、关闭或未被 Windows 用作桌面时，不应触发 `Attached-Extended`。即使 `State` 因 WHEA/TDR 变成 `Attached-Degraded`，`Display mode` 仍会单独给出实际显示模式。 / `Connected monitors` means Windows can see the monitor device/EDID; `Desktop-active monitors` means the screen currently has a desktop area and resolution. A black, powered-off, or desktop-disabled external display should not trigger `Attached-Extended`. Even when `State` becomes `Attached-Degraded` because of WHEA/TDR, `Display mode` still reports the actual display mode separately.
+
 ## 常用命令 / Common Commands
 
 更完整的中文使用说明见 [../docs/USAGE.zh-CN.md](../docs/USAGE.zh-CN.md)。
