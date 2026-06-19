@@ -67,6 +67,8 @@ Windows 11 外接显卡坞、笔记本外接桌面级显卡、核显独显冲突
 - [docs/CASE_STUDY.en.md](docs/CASE_STUDY.en.md)：English case study.
 - [docs/COMMUNITY_OUTREACH.zh-CN.md](docs/COMMUNITY_OUTREACH.zh-CN.md)：中文社区传播包，包含短帖、长帖、标签、隐私检查和配图建议。
 - [docs/COMMUNITY_OUTREACH.en.md](docs/COMMUNITY_OUTREACH.en.md)：English community outreach kit with short post, long-post outline, tags, privacy checklist, and visual prompt.
+- [docs/POSTING_QUEUE.zh-CN.md](docs/POSTING_QUEUE.zh-CN.md)：中文社区发布队列，记录优先平台、入口、登录限制和隐私检查。
+- [docs/POSTING_QUEUE.en.md](docs/POSTING_QUEUE.en.md)：English community posting queue with target platforms, login gates, and privacy checks.
 - [docs/REFERENCES.md](docs/REFERENCES.md)：官方文档和社区相似问题参考。
 - [SECURITY.md](SECURITY.md)：公开上传前的隐私注意事项。
 
